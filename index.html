@@ -1,0 +1,111 @@
+<!-- Navigation Bar -->
+<nav class="bg-white border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
+                <span class="font-extrabold text-xl tracking-wider text-slate-900">BizVenture</span>
+            </div>
+
+            <div class="flex space-x-1 sm:space-x-4">
+
+                <button onclick="switchTab('dashboard')" id="btn-dashboard"
+                    class="nav-btn px-3 py-2 rounded-md text-sm font-medium bg-blue-600 text-white">
+                    홈 / 대시보드
+                </button>
+
+                <button onclick="switchTab('startup')" id="btn-startup"
+                    class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50">
+                    경영 시뮬레이터
+                </button>
+
+                <button onclick="switchTab('macro')" id="btn-macro"
+                    class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50">
+                    자산&경제 시뮬레이터
+                </button>
+
+                <button onclick="switchTab('quiz')" id="btn-quiz"
+                    class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50">
+                    경제 퀴즈
+                </button>
+
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+<!-- HERO BANNER -->
+<div class="bg-gradient-to-r from-blue-100 via-slate-100 to-sky-200 rounded-2xl p-8 sm:p-12 text-slate-900 shadow-xl relative overflow-hidden border border-slate-200">
+
+    <div class="relative z-10 max-w-2xl">
+
+        <span class="bg-blue-600 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
+            Hackathon Project
+        </span>
+
+        <h1 class="text-3xl sm:text-5xl font-extrabold mt-4 leading-tight">
+            이론을 넘어 실전으로,<br>
+            경영·경제 플레이그라운드
+        </h1>
+
+        <p class="text-slate-600 mt-4 text-sm sm:text-base leading-relaxed">
+            BizVenture는 청소년 및 대학 진학 희망자를 위해 설계된 인터랙티브 경영·경제 학습 플랫폼입니다.
+            복잡한 수식과 그래프 대신, 직접 스타트업을 운영하고 거시경제 시나리오별 포트폴리오를 조정하며 경제학적 인사이트를 체득하세요.
+        </p>
+
+        <div class="mt-8 flex flex-wrap gap-4">
+
+            <button onclick="switchTab('startup')"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-lg shadow-md transition-all">
+                경영 시작하기
+            </button>
+
+            <button onclick="switchTab('macro')"
+                class="bg-white border border-slate-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 text-slate-700 font-semibold px-6 py-3 rounded-lg transition-all">
+                경제 흐름 분석하기
+            </button>
+
+        </div>
+    </div>
+
+    <div class="absolute right-0 bottom-0 top-0 w-1/3 hidden lg:flex items-center justify-center opacity-10">
+        <i class="fa-solid fa-graduation-cap text-[15rem] text-blue-900"></i>
+    </div>
+</div>
+
+
+<!-- switchTab FUNCTION 색상 부분만 수정 -->
+<script>
+function switchTab(tabId) {
+
+    document.querySelectorAll('.tab-content').forEach(el =>
+        el.classList.add('hidden')
+    );
+
+    document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+
+        btn.classList.remove(
+            'bg-blue-600',
+            'text-white'
+        );
+
+        btn.classList.add(
+            'text-slate-600',
+            'hover:text-blue-700',
+            'hover:bg-blue-50'
+        );
+    });
+
+    document.getElementById(`btn-${tabId}`).classList.add(
+        'bg-blue-600',
+        'text-white'
+    );
+
+    document.getElementById(`btn-${tabId}`).classList.remove(
+        'text-slate-600'
+    );
+}
+</script>
