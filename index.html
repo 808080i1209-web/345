@@ -1,111 +1,715 @@
-<!-- Navigation Bar -->
-<nav class="bg-white border-b border-slate-200 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16 items-center">
-            <div class="flex items-center space-x-3">
-                <i class="fa-solid fa-chart-line text-2xl text-blue-600"></i>
-                <span class="font-extrabold text-xl tracking-wider text-slate-900">BizVenture</span>
+```html
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yongdon-Nudge: 고등학생 체감물가 및 소비 효율성 분석기</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandBg: '#0b0f19',
+                        cardBg: '#161c2a',
+                        primary: '#10b981', // Emerald Green
+                        secondary: '#3b82f6', // Blue
+                        accent: '#f59e0b', // Amber
+                        danger: '#ef4444' // Red
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700;800&display=swap');
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #0b0f19;
+        }
+        /* Custom Scrollbar for sleek UI */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl">💸</span>
+                <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Yongdon Nudge</span>
             </div>
-
-            <div class="flex space-x-1 sm:space-x-4">
-
-                <button onclick="switchTab('dashboard')" id="btn-dashboard"
-                    class="nav-btn px-3 py-2 rounded-md text-sm font-medium bg-blue-600 text-white">
-                    홈 / 대시보드
-                </button>
-
-                <button onclick="switchTab('startup')" id="btn-startup"
-                    class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50">
-                    경영 시뮬레이터
-                </button>
-
-                <button onclick="switchTab('macro')" id="btn-macro"
-                    class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50">
-                    자산&경제 시뮬레이터
-                </button>
-
-                <button onclick="switchTab('quiz')" id="btn-quiz"
-                    class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-blue-700 hover:bg-blue-50">
-                    경제 퀴즈
-                </button>
-
-            </div>
+            <span class="text-xs font-semibold px-2 py-1 bg-emerald-500/10 text-emerald-400 rounded-full border border-emerald-500/20">고등학생 미시경제 지표 v2.5</span>
         </div>
-    </div>
-</nav>
+    </header>
 
+    <!-- Main Container (Mobile App Mockup Limit) -->
+    <main class="flex-grow max-w-md w-full mx-auto px-4 py-6 space-y-6">
+        
+        <!-- App Intro Hero Card -->
+        <div class="bg-gradient-to-br from-cardBg to-slate-900 p-5 rounded-2xl border border-slate-800 shadow-xl">
+            <p class="text-xs font-semibold text-emerald-400 uppercase tracking-widest mb-1">인플레이션 시대의 합리적 소비 가이드</p>
+            <h2 class="text-xl font-bold mb-2">명목 소득은 그대로, 내 용돈의 실질 가치는?</h2>
+            <p class="text-xs text-slate-400 leading-relaxed">
+                부모님이 주시는 용돈(명목 화폐액)은 같은데, 왜 사고 싶은 건 늘 부족할까요? 
+                청소년 핵심 지출 품목을 **7대 미시경제학적 카테고리**로 세분화하여 실질 구매력(Real Purchasing Power)의 감소율을 정밀 진단하고, 나만의 **기타 맞춤 지출 품목**을 등록해 완벽한 개인 맞춤형 자산 진단을 시작하세요!
+            </p>
+        </div>
 
-<!-- HERO BANNER -->
-<div class="bg-gradient-to-r from-blue-100 via-slate-100 to-sky-200 rounded-2xl p-8 sm:p-12 text-slate-900 shadow-xl relative overflow-hidden border border-slate-200">
+        <!-- Dashboard Steps -->
+        <section class="space-y-4">
+            <!-- step 1: Budget setting -->
+            <div class="bg-cardBg p-5 rounded-2xl border border-slate-800 space-y-3">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-emerald-400 font-bold text-sm">STEP 1</span>
+                    <h3 class="font-bold text-base">한 달 가용 예산(명목 소득) 설정</h3>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1" for="allowance">정기 용돈 및 부수입 총액 (원)</label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-semibold text-sm">₩</span>
+                        <input type="number" id="allowance" value="100000" class="w-full bg-slate-950/80 border border-slate-800 rounded-xl py-2.5 pl-8 pr-4 text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 transition" placeholder="용돈 금액 입력">
+                    </div>
+                </div>
+            </div>
 
-    <div class="relative z-10 max-w-2xl">
+            <!-- step 2: Spending input (7-Category Breakdown) -->
+            <div class="bg-cardBg p-5 rounded-2xl border border-slate-800 space-y-4">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-emerald-400 font-bold text-sm">STEP 2</span>
+                    <h3 class="font-bold text-base">7대 체감 지출 품목 미시 분석</h3>
+                </div>
+                
+                <p class="text-xs text-slate-400">최근 한 달 동안 소비한 세부 품목의 한계 지출액을 입력해주세요.</p>
 
-        <span class="bg-blue-600 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">
-            Hackathon Project
-        </span>
+                <div class="space-y-3">
+                    <!-- Category 1 -->
+                    <div class="flex items-center justify-between gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🍓</span>
+                            <div>
+                                <h4 class="text-xs font-bold">트렌드 디저트 (마라탕, 탕후루 등)</h4>
+                                <span class="text-[10px] text-red-400 font-semibold">동조소비/베블런 효과 +12.4%</span>
+                            </div>
+                        </div>
+                        <input type="number" id="expTrend" value="24000" class="w-24 bg-slate-950 text-right border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    </div>
 
-        <h1 class="text-3xl sm:text-5xl font-extrabold mt-4 leading-tight">
-            이론을 넘어 실전으로,<br>
-            경영·경제 플레이그라운드
-        </h1>
+                    <!-- Category 2 -->
+                    <div class="flex items-center justify-between gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🏪</span>
+                            <div>
+                                <h4 class="text-xs font-bold">편의점 간편식 (삼각김밥, 라면 등)</h4>
+                                <span class="text-[10px] text-red-400 font-semibold">생계형 필수재/열등재 성격 +8.2%</span>
+                            </div>
+                        </div>
+                        <input type="number" id="expConvenience" value="15000" class="w-24 bg-slate-950 text-right border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    </div>
 
-        <p class="text-slate-600 mt-4 text-sm sm:text-base leading-relaxed">
-            BizVenture는 청소년 및 대학 진학 희망자를 위해 설계된 인터랙티브 경영·경제 학습 플랫폼입니다.
-            복잡한 수식과 그래프 대신, 직접 스타트업을 운영하고 거시경제 시나리오별 포트폴리오를 조정하며 경제학적 인사이트를 체득하세요.
+                    <!-- Category 3 -->
+                    <div class="flex items-center justify-between gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎤</span>
+                            <div>
+                                <h4 class="text-xs font-bold">문화 여가 (코인노래방, 보드게임)</h4>
+                                <span class="text-[10px] text-red-400 font-semibold">경험재 소비 성향 +15.0%</span>
+                            </div>
+                        </div>
+                        <input type="number" id="expCulture" value="12000" class="w-24 bg-slate-950 text-right border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <!-- Category 4 -->
+                    <div class="flex items-center justify-between gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🍔</span>
+                            <div>
+                                <h4 class="text-xs font-bold">외식 및 배달 (치킨, 피자 등)</h4>
+                                <span class="text-[10px] text-red-400 font-semibold">외식 물가 및 배달 팁 수수료 +11.8%</span>
+                            </div>
+                        </div>
+                        <input type="number" id="expDelivery" value="22000" class="w-24 bg-slate-950 text-right border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <!-- Category 5 -->
+                    <div class="flex items-center justify-between gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">📚</span>
+                            <div>
+                                <h4 class="text-xs font-bold">교육 기자재 (문제집, 스터디카페)</h4>
+                                <span class="text-[10px] text-red-400 font-semibold">가격 탄력성이 낮은 필수재 +5.4%</span>
+                            </div>
+                        </div>
+                        <input type="number" id="expEducation" value="15000" class="w-24 bg-slate-950 text-right border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <!-- Category 6 -->
+                    <div class="flex items-center justify-between gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">🎮</span>
+                            <div>
+                                <h4 class="text-xs font-bold">구독 서비스 및 게임 (OTT, 스팀)</h4>
+                                <span class="text-[10px] text-red-400 font-semibold">디지털 락인(Lock-in) 지출 +9.5%</span>
+                            </div>
+                        </div>
+                        <input type="number" id="expDigital" value="9900" class="w-24 bg-slate-950 text-right border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <!-- Category 7 -->
+                    <div class="flex items-center justify-between gap-4 bg-slate-950/40 p-3 rounded-xl border border-slate-800/60">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xl">👟</span>
+                            <div>
+                                <h4 class="text-xs font-bold">의류 및 패션 잡화 (무신사, 코스메틱)</h4>
+                                <span class="text-[10px] text-red-400 font-semibold">상대적 선호재 소비 성향 +10.2%</span>
+                            </div>
+                        </div>
+                        <input type="number" id="expFashion" value="20000" class="w-24 bg-slate-950 text-right border border-slate-800 rounded-lg px-2 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2.5: Dynamic Custom Spending Builder -->
+            <div class="bg-cardBg p-5 rounded-2xl border border-slate-800 space-y-4">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="text-emerald-400 font-bold text-sm">STEP 2.5</span>
+                    <h3 class="font-bold text-base">⚙️ 나만의 맞춤 품목 (기타 소비) 추가</h3>
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    목록에 없는 자신만의 커스텀 지출 항목(예: 문구 구입, 굿즈, 용돈 저축 등)을 추가하고 예상 체감 인플레이션을 임의로 적용해 보세요.
+                </p>
+
+                <div class="space-y-3 bg-slate-950/40 p-4 rounded-xl border border-slate-800/60">
+                    <div>
+                        <label class="block text-[11px] text-slate-400 mb-1" for="customName">품목 이름</label>
+                        <input type="text" id="customName" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500" placeholder="예: 아이돌 앨범, 독서실비, 문구용품">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1" for="customAmount">지출 금액 (원)</label>
+                            <input type="number" id="customAmount" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500" placeholder="예: 15000">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] text-slate-400 mb-1" for="customInf">체감 인플레이션율</label>
+                            <select id="customInf" class="w-full bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500">
+                                <option value="0.03">안정재 (+3.0%)</option>
+                                <option value="0.06" selected>일반 소비자 물가 (+6.0%)</option>
+                                <option value="0.10">유동성 급상승재 (+10.0%)</option>
+                                <option value="0.18">초고인플레이션재 (+18.0%)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="addCustomItem()" class="w-full bg-slate-800 hover:bg-slate-700 text-emerald-400 font-bold py-2 rounded-lg text-xs transition duration-150 border border-emerald-500/10 hover:border-emerald-500/30">
+                        ＋ 이 소비 항목 리스트에 추가
+                    </button>
+                </div>
+
+                <!-- Dynamically Registered Custom Items List -->
+                <div id="customListWrapper" class="hidden space-y-2">
+                    <h4 class="text-xs font-bold text-slate-300">추가된 나만의 소비 목록</h4>
+                    <div id="customItemsContainer" class="space-y-2">
+                        <!-- Dynamic items injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Run Diagnostics Action -->
+            <div class="px-2">
+                <button onclick="calculateAnalysis()" class="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-95 text-slate-950 font-bold py-4 px-4 rounded-2xl shadow-xl transition duration-200 flex items-center justify-center gap-2">
+                    <span>📊</span> 실시간 실질 구매력 정밀 분석하기
+                </button>
+            </div>
+        </section>
+
+        <!-- Custom Notification Modal Substitute (No native alerts) -->
+        <div id="customToast" class="hidden bg-slate-900 border border-red-500/30 text-red-300 p-4 rounded-xl text-xs flex items-center justify-between shadow-xl">
+            <span id="toastMsg">금액을 바르게 입력해주세요.</span>
+            <button onclick="closeToast()" class="text-slate-400 hover:text-white font-bold ml-2">X</button>
+        </div>
+
+        <!-- STEP 3: Live Economic Diagnostic Dashboard -->
+        <section id="analysisResult" class="hidden space-y-6">
+            
+            <!-- Result Overview Card -->
+            <div class="bg-cardBg p-5 rounded-2xl border border-slate-800 space-y-4">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-emerald-400">ECONOMIC DIAGNOSTIC REPORT</span>
+                    <span id="efficiencyBadge" class="text-xs font-extrabold px-3 py-1 bg-amber-500/10 text-accent rounded-full border border-amber-500/20">C등급 (소비 경고)</span>
+                </div>
+
+                <h3 class="text-lg font-bold">화폐 가치 하락 및 실질 가치 진단</h3>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/40">
+                        <p class="text-[10px] text-slate-400 mb-1">총 명목 지출액 (Nominal)</p>
+                        <p id="txtNominalSpend" class="text-base font-bold text-slate-100">₩0</p>
+                    </div>
+                    <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800/40">
+                        <p class="text-[10px] text-slate-400 mb-1">인플레이션 반영 실질 지출 (Real)</p>
+                        <p id="txtRealSpend" class="text-base font-bold text-emerald-400">₩0</p>
+                    </div>
+                </div>
+
+                <!-- Inflation Loss Gauge -->
+                <div class="bg-slate-950/80 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs text-slate-400 font-semibold">내 지출 바스켓의 가중 물가상승률</span>
+                        <span id="txtAvgInflation" class="text-xs font-bold text-red-400">+10.4%</span>
+                    </div>
+                    <div class="flex justify-between items-center border-t border-slate-800/60 pt-2 mt-2">
+                        <span class="text-xs font-semibold text-slate-300">물가상승으로 훼손된 실질 가치 (손실분)</span>
+                        <span id="txtLossAmount" class="text-sm font-bold text-red-500">-₩9,200</span>
+                    </div>
+                </div>
+
+                <!-- Opportunity Cost Mapping -->
+                <div class="bg-red-500/5 border border-red-500/10 p-4 rounded-xl text-xs space-y-2">
+                    <p class="font-bold text-red-300 flex items-center gap-1">
+                        <span>⚠️</span> 보이지 않는 경제적 기회비용(Opportunity Cost)
+                    </p>
+                    <p class="text-slate-400 leading-relaxed">
+                        화폐 가치 잠식으로 실종된 지출력 <span id="oppLossText" class="font-bold text-red-400">₩9,200</span>원은 청소년 실생활 체감 가치 기준으로 <strong class="text-slate-200"><span id="oppCostPC">0</span>시간의 PC방 이용권</strong> 또는 <strong class="text-slate-200">기본형 탕후루 <span id="oppCostTang">0</span>개</strong>를 선택할 기회를 포기한 것(기회비용 상실)과 같습니다.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Chart.js Dual Visualizer -->
+            <div class="bg-cardBg p-5 rounded-2xl border border-slate-800 space-y-4">
+                <h4 class="text-sm font-bold">명목 화폐 지출액 vs 실질 소득 구매력 비교</h4>
+                <div class="h-56 w-full relative">
+                    <canvas id="inflationChart"></canvas>
+                </div>
+                <h4 class="text-sm font-bold mt-4">7대 소비 항목 및 맞춤 품목 점유 비율</h4>
+                <div class="h-64 w-full relative">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <!-- STEP 4: Nudge & Substitution Prescription -->
+            <div class="bg-gradient-to-r from-emerald-950/30 to-teal-950/30 p-5 rounded-2xl border border-emerald-500/20 space-y-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg">🌿</span>
+                    <h3 class="font-bold text-base text-emerald-300">행동경제학적 대체재 넛지(Nudge) 처방</h3>
+                </div>
+
+                <p class="text-xs text-slate-300 leading-relaxed">
+                    상대가격이 상승한 재화를 합리적 **대체재(Substitution Goods)**로 전환하여 지출 구조를 재설계함으로써 인플레이션의 부정적 소득 효과를 효과적으로 방어할 수 있습니다.
+                </p>
+
+                <!-- Substitution List -->
+                <div class="space-y-2.5 text-xs">
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-200">🍓 디저트: 전문점 탕후루 ➔ 가정용 냉동 과일 믹스</span>
+                            <p class="text-[10px] text-slate-400">동조소비 완화 및 건강 한계 효용 증가</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-emerald-400">지출 -50%</span>
+                            <p class="text-[9px] text-slate-500">대체재 전환</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-200">🍔 외식/배달: 개별 배달 ➔ 포장 주문 및 공동 배달</span>
+                            <p class="text-[10px] text-slate-400">유통 수수료 및 거래 비용(Transaction Cost) 제거</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-emerald-400">지출 -30%</span>
+                            <p class="text-[9px] text-slate-500">거래비용 절감</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 flex justify-between gap-3">
+                        <div class="space-y-1">
+                            <span class="font-bold text-slate-200">🎮 디지털 구독: 다중 계정 단독 구독 ➔ 패밀리 요금 공유</span>
+                            <p class="text-[10px] text-slate-400">공유 경제 모델을 통한 지출 파편화 통합</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-bold text-emerald-400">지출 -40%</span>
+                            <p class="text-[9px] text-slate-500">규모의 경제</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Result Indicator -->
+                <div class="bg-emerald-950/50 p-4 rounded-xl border border-emerald-500/20 text-center space-y-1">
+                    <p class="text-[10px] text-emerald-400 font-semibold uppercase tracking-wider">넛지 솔루션 실행 시 기대 재무 변화</p>
+                    <p class="text-base font-bold text-slate-100">
+                        기대 흑자 용돈: <span class="text-emerald-300">약 ₩18,500 확보</span>
+                    </p>
+                    <p class="text-xs text-emerald-400">
+                        실질 구매력 회복률: <strong id="recoveryPower">+14.2%</strong>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Economic Principles Section -->
+            <div class="bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-3">
+                <h4 class="text-xs font-bold text-teal-400 uppercase tracking-widest flex items-center gap-1">
+                    <span>💡</span> 미시경제학적 지출 행태 분석 요약
+                </h4>
+                <div class="text-[11px] text-slate-400 space-y-2 leading-relaxed">
+                    <p>• <strong>실질 소득 (Real Income):</strong> 명목 소득(용돈)을 물가수준으로 나눈 것으로, 화폐의 실제 상품 구매 능력을 지칭합니다.</p>
+                    <p>• <strong>대체 효과 (Substitution Effect):</strong> 재화의 상대 가격이 상승함에 따라 상대적으로 저렴해진 대체재로 소비가 이전되는 경제적 유인을 의미합니다.</p>
+                    <p>• <strong>동조 소비 (Bandwagon Effect):</strong> 타인의 소비 형태를 모방함으로써 발생하는 사회적 유행 편승 지출로, 본 분석기에서 '트렌드 디저트' 소비 성향 분석에 적용되었습니다.</p>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Footer Description -->
+    <footer class="border-t border-slate-800 py-4 bg-slate-950/40 text-center">
+        <p class="text-[10px] text-slate-500">
+            &copy; 2026 Yongdon Nudge Corp. 미시경제 행태주의 소비 분석 엔진 탑재.
         </p>
+    </footer>
 
-        <div class="mt-8 flex flex-wrap gap-4">
+    <!-- Chart Configuration Script -->
+    <script>
+        // 7-Category Detailed Youth CPI Inflation Rates (Realistic Estimates)
+        const inflationRates = {
+            trend: 0.124,       // 12.4% (마라탕, 탕후루 등 유행 디저트 급등 물가)
+            convenience: 0.082, // 8.2% (편의점 유통 원재료 인상률)
+            culture: 0.150,     // 15.0% (코인노래방 기본 단가 인상 수준)
+            delivery: 0.118,    // 11.8% (배달 팁 및 프랜차이즈 가공식품 가중치)
+            education: 0.054,   // 5.4% (학습 참고서 및 스터디카페 이용료 변동 추이)
+            digital: 0.095,     // 9.5% (글로벌 테크 플랫폼 구독 요금제 인상 평균)
+            fashion: 0.102      // 10.2% (의류 및 뷰티 자재 인플레이션)
+        };
 
-            <button onclick="switchTab('startup')"
-                class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-lg shadow-md transition-all">
-                경영 시작하기
-            </button>
+        // Custom items collection
+        let customItems = [];
 
-            <button onclick="switchTab('macro')"
-                class="bg-white border border-slate-300 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700 text-slate-700 font-semibold px-6 py-3 rounded-lg transition-all">
-                경제 흐름 분석하기
-            </button>
+        let barChartInstance = null;
+        let doughnutChartInstance = null;
 
-        </div>
-    </div>
+        function showToast(message) {
+            const toast = document.getElementById('customToast');
+            document.getElementById('toastMsg').innerText = message;
+            toast.classList.remove('hidden');
+            toast.scrollIntoView({ behavior: 'smooth' });
+        }
 
-    <div class="absolute right-0 bottom-0 top-0 w-1/3 hidden lg:flex items-center justify-center opacity-10">
-        <i class="fa-solid fa-graduation-cap text-[15rem] text-blue-900"></i>
-    </div>
-</div>
+        function closeToast() {
+            document.getElementById('customToast').classList.add('hidden');
+        }
 
+        // Add dynamically created item
+        function addCustomItem() {
+            const nameInput = document.getElementById('customName');
+            const amountInput = document.getElementById('customAmount');
+            const infSelect = document.getElementById('customInf');
 
-<!-- switchTab FUNCTION 색상 부분만 수정 -->
-<script>
-function switchTab(tabId) {
+            const name = nameInput.value.trim();
+            const amount = parseFloat(amountInput.value) || 0;
+            const rate = parseFloat(infSelect.value);
 
-    document.querySelectorAll('.tab-content').forEach(el =>
-        el.classList.add('hidden')
-    );
+            if (!name) {
+                showToast("맞춤 품목 이름을 입력해 주세요.");
+                return;
+            }
+            if (amount <= 0) {
+                showToast("올바른 지출 금액을 입력해 주세요.");
+                return;
+            }
+            closeToast();
 
-    document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            // Push custom object
+            const newItem = {
+                id: Date.now(),
+                name: name,
+                amount: amount,
+                rate: rate
+            };
 
-    document.querySelectorAll('.nav-btn').forEach(btn => {
+            customItems.push(newItem);
+            
+            // Clean inputs
+            nameInput.value = '';
+            amountInput.value = '';
 
-        btn.classList.remove(
-            'bg-blue-600',
-            'text-white'
-        );
+            // Update custom items DOM
+            renderCustomItems();
+            
+            // Recalculate analysis dynamically for fluid feedback
+            calculateAnalysis();
+        }
 
-        btn.classList.add(
-            'text-slate-600',
-            'hover:text-blue-700',
-            'hover:bg-blue-50'
-        );
-    });
+        // Remove custom item
+        function removeCustomItem(id) {
+            customItems = customItems.filter(item => item.id !== id);
+            renderCustomItems();
+            calculateAnalysis();
+        }
 
-    document.getElementById(`btn-${tabId}`).classList.add(
-        'bg-blue-600',
-        'text-white'
-    );
+        // Render dynamic list of customized inputs
+        function renderCustomItems() {
+            const container = document.getElementById('customItemsContainer');
+            const wrapper = document.getElementById('customListWrapper');
 
-    document.getElementById(`btn-${tabId}`).classList.remove(
-        'text-slate-600'
-    );
-}
-</script>
+            if (customItems.length === 0) {
+                wrapper.classList.add('hidden');
+                container.innerHTML = '';
+                return;
+            }
+
+            wrapper.classList.remove('hidden');
+            container.innerHTML = '';
+
+            customItems.forEach(item => {
+                const percentText = (item.rate * 100).toFixed(0);
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-slate-900/80 p-3 rounded-lg border border-slate-800/80 text-xs";
+                div.innerHTML = `
+                    <div class="space-y-0.5">
+                        <div class="flex items-center gap-1.5">
+                            <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span>
+                            <span class="font-bold text-slate-200">${item.name}</span>
+                        </div>
+                        <div class="flex items-center gap-2 text-[10px] text-slate-400">
+                            <span>지출액: ₩${item.amount.toLocaleString()}</span>
+                            <span>•</span>
+                            <span class="text-cyan-400 font-semibold">인플레이션율: +${percentText}%</span>
+                        </div>
+                    </div>
+                    <button onclick="removeCustomItem(${item.id})" class="text-red-400 hover:text-red-300 font-bold px-2 py-1 bg-red-500/5 hover:bg-red-500/10 rounded-md transition duration-150">
+                        삭제
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function calculateAnalysis() {
+            const allowance = parseFloat(document.getElementById('allowance').value) || 0;
+            
+            // Collect standard spending values
+            const expTrend = parseFloat(document.getElementById('expTrend').value) || 0;
+            const expConv = parseFloat(document.getElementById('expConvenience').value) || 0;
+            const expCult = parseFloat(document.getElementById('expCulture').value) || 0;
+            const expDeli = parseFloat(document.getElementById('expDelivery').value) || 0;
+            const expEduc = parseFloat(document.getElementById('expEducation').value) || 0;
+            const expDigi = parseFloat(document.getElementById('expDigital').value) || 0;
+            const expFash = parseFloat(document.getElementById('expFashion').value) || 0;
+
+            if (allowance <= 0) {
+                showToast("기본 용돈 가용 예산을 바르게 설정해 주세요.");
+                return;
+            }
+            closeToast();
+
+            // Sum standard categories
+            const standardNominalTotal = expTrend + expConv + expCult + expDeli + expEduc + expDigi + expFash;
+            
+            // Sum custom items
+            const customNominalTotal = customItems.reduce((acc, item) => acc + item.amount, 0);
+            
+            const nominalTotal = standardNominalTotal + customNominalTotal;
+
+            if (nominalTotal <= 0) {
+                showToast("최소 하나 이상의 지출 품목 금액을 기재하거나 추가해 주세요.");
+                return;
+            }
+
+            // Real purchasing power calculation per standard category
+            const realTrend = expTrend / (1 + inflationRates.trend);
+            const realConv = expConv / (1 + inflationRates.convenience);
+            const realCult = expCult / (1 + inflationRates.culture);
+            const realDeli = expDeli / (1 + inflationRates.delivery);
+            const realEduc = expEduc / (1 + inflationRates.education);
+            const realDigi = expDigi / (1 + inflationRates.digital);
+            const realFash = expFash / (1 + inflationRates.fashion);
+
+            // Real purchasing power calculation per custom category
+            const customRealTotal = customItems.reduce((acc, item) => {
+                return acc + (item.amount / (1 + item.rate));
+            }, 0);
+
+            const realTotal = Math.round(realTrend + realConv + realCult + realDeli + realEduc + realDigi + realFash + customRealTotal);
+            const lossTotal = nominalTotal - realTotal;
+
+            const avgInflationPercent = (((nominalTotal / realTotal) - 1) * 100).toFixed(1);
+
+            // Update DOM Elements
+            document.getElementById('txtNominalSpend').innerText = `₩${nominalTotal.toLocaleString()}`;
+            document.getElementById('txtRealSpend').innerText = `₩${realTotal.toLocaleString()}`;
+            document.getElementById('txtAvgInflation').innerText = `+${avgInflationPercent}%`;
+            document.getElementById('txtLossAmount').innerText = `-₩${lossTotal.toLocaleString()}`;
+            document.getElementById('oppLossText').innerText = `₩${lossTotal.toLocaleString()}`;
+
+            // Real-world high schooler cost mapping: PC Room = 1500 / Tanghulu = 4000
+            const pcHours = (lossTotal / 1500).toFixed(1);
+            const tangCount = (lossTotal / 4000).toFixed(1);
+            document.getElementById('oppCostPC').innerText = pcHours;
+            document.getElementById('oppCostTang').innerText = tangCount;
+
+            // Micro-Efficiency Grade Evaluation based on budgeting constraint
+            const spendRatio = nominalTotal / allowance;
+            let grade = 'S등급 (초밀착 자산 관리)';
+            let badgeClass = 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20';
+            
+            if (spendRatio > 1.0) {
+                grade = 'F등급 (적자 자산 위기)';
+                badgeClass = 'text-red-400 bg-red-500/10 border-red-500/20';
+            } else if (spendRatio > 0.85) {
+                grade = 'D등급 (가계 위험 노출)';
+                badgeClass = 'text-orange-400 bg-orange-500/10 border-orange-500/20';
+            } else if (spendRatio > 0.6) {
+                grade = 'C등급 (소비 조정 필요)';
+                badgeClass = 'text-accent bg-amber-500/10 border-amber-500/20';
+            } else if (spendRatio > 0.3) {
+                grade = 'B등급 (안정적 소비)';
+                badgeClass = 'text-blue-400 bg-blue-500/10 border-blue-500/20';
+            } else {
+                grade = 'A등급 (합리적 주체)';
+                badgeClass = 'text-teal-400 bg-teal-500/10 border-teal-500/20';
+            }
+            
+            const badgeEl = document.getElementById('efficiencyBadge');
+            badgeEl.innerText = grade;
+            badgeEl.className = `text-xs font-extrabold px-3 py-1 rounded-full border ${badgeClass}`;
+
+            // Recovery calculation: If recommended nudge action changes consumption behavior (approx 20% total optimization)
+            const expectedOptimizedTotal = Math.max(0, nominalTotal - 18500);
+            const recoveryRate = (((nominalTotal / (expectedOptimizedTotal || 1)) * 100) - 100).toFixed(1);
+            document.getElementById('recoveryPower').innerText = `+${recoveryRate}%`;
+
+            // Display result panel
+            const resultSection = document.getElementById('analysisResult');
+            resultSection.classList.remove('hidden');
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+
+            // Redraw charts using standard plus dynamic custom items
+            renderCharts(nominalTotal, realTotal, {
+                expTrend, expConv, expCult, expDeli, expEduc, expDigi, expFash
+            });
+        }
+
+        function renderCharts(nominal, real, expData) {
+            // 1. Nominal vs Real Dual Bar Chart
+            const barCtx = document.getElementById('inflationChart').getContext('2d');
+            if (barChartInstance) {
+                barChartInstance.destroy();
+            }
+
+            barChartInstance = new Chart(barCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['명목 화폐 지출 (지출액)', '실질 가치 (구매력 환산)'],
+                    datasets: [{
+                        data: [nominal, real],
+                        backgroundColor: ['#f59e0b', '#10b981'],
+                        borderRadius: 8,
+                        barThickness: 45
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#94a3b8', font: { size: 10 } }
+                        },
+                        x: {
+                            ticks: { color: '#f1f5f9', font: { size: 11, weight: 'bold' } }
+                        }
+                    }
+                }
+            });
+
+            // 2. Spending Category Doughnut Chart (Dynamic Expansion for Custom Items!)
+            const doughnutCtx = document.getElementById('categoryChart').getContext('2d');
+            if (doughnutChartInstance) {
+                doughnutChartInstance.destroy();
+            }
+
+            // Standard label configuration
+            let labels = [
+                '트렌드 디저트', 
+                '편의점 식사', 
+                '문화/여가', 
+                '외식/배달', 
+                '교육 기자재', 
+                '디지털 구독', 
+                '의류 및 패션'
+            ];
+
+            let dataValues = [
+                expData.expTrend,
+                expData.expConv,
+                expData.expCult,
+                expData.expDeli,
+                expData.expEduc,
+                expData.expDigi,
+                expData.expFash
+            ];
+
+            // Palette options
+            let colors = [
+                '#ec4899', // Pink
+                '#f59e0b', // Amber
+                '#3b82f6', // Blue
+                '#ef4444', // Red
+                '#10b981', // Emerald
+                '#8b5cf6', // Purple
+                '#06b6d4'  // Cyan
+            ];
+
+            // Append dynamic user custom items
+            customItems.forEach((item, index) => {
+                labels.push(`(기타) ${item.name}`);
+                dataValues.push(item.amount);
+                // Dynamically alternate colors to ensure UI clarity
+                const customColors = ['#f43f5e', '#a855f7', '#6366f1', '#14b8a6', '#22c55e'];
+                colors.push(customColors[index % customColors.length]);
+            });
+
+            doughnutChartInstance = new Chart(doughnutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: colors,
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { color: '#94a3b8', font: { size: 9 } }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
+
+```
+
